@@ -1,3 +1,57 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "unicorn"],
+  "rules": {
+    "unicorn/filename-case": [
+      "warn",
+      {
+        "cases": {
+          "camelCase": true,
+          "kebabCase": true,
+          "pascalCase": true
+        }
+      }
+    ],
+    "unicorn/prefer-includes": "warn",
+    "unicorn/catch-error-name": "error",
+    "unicorn/no-anonymous-default-export": "error",
+    "unicorn/no-empty-file": "error",
+    "unicorn/no-useless-spread": "warn",
+    "unicorn/better-regex": "error",
+    "react/jsx-filename-extension": "off",
+    "react/button-has-type": "off",
+    "react/function-component-definition": "off",
+    "react/jsx-props-no-spreading": "off",
+    "object-curly-newline": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "max-len": [
+      "warn",
+      {
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "operator-linebreak": "off",
+    "no-console": ["warn", { "allow": ["error"] }],
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "off"
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "packages/*/tsconfig.json"
+      }
+    }
+  },
+  "ignorePatterns": ["tailwind.config.js", "postcss.config.js"]
 }
