@@ -29,9 +29,11 @@
     "react/jsx-props-no-spreading": "off",
     "object-curly-newline": "off",
     "react/jsx-one-expression-per-line": "off",
+
     "max-len": [
       "warn",
       {
+        "code": 125,
         "ignoreUrls": true,
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
@@ -40,18 +42,17 @@
     "operator-linebreak": "off",
     "no-console": ["warn", { "allow": ["error"] }],
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "off"
-  },
-  "settings": {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": "packages/*/tsconfig.json"
+    "@typescript-eslint/no-explicit-any": "off",
+    "import/extensions": [
+      "warn",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
       }
-    }
+    ]
   },
   "ignorePatterns": ["tailwind.config.js", "postcss.config.js"]
 }

@@ -1,20 +1,26 @@
 import Dexie, { EntityTable } from 'dexie';
 
-interface Task {
+interface CollectionField {
   id: string;
-  createdDt: Date;
-  dueDt?: Date;
-  text: string;
-  isComplete: boolean;
+  name: string;
+  type: 'text' | 'number' | 'date' | 'boolean';
 }
 
-const db = new Dexie('Tasks') as Dexie & {
-  tasks: EntityTable<Task, 'id'>;
+interface Collection {
+  id: string;
+  createdDt: Date;
+  name: string;
+  fields: CollectionField[];
+  values: Record<string, string | number | boolean>[];
+}
+
+const db = new Dexie('Collections') as Dexie & {
+  collections: EntityTable<Collection, 'id'>;
 };
 
 db.version(1).stores({
-  tasks: '++id, createdDt, dueDt, text, isComplete',
+  collections: '++id, createdDt, name, fields, values',
 });
 
-export type { Task };
+export type { CollectionField, Collection };
 export { db };
