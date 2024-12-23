@@ -1,13 +1,14 @@
+import { Cancel } from '@mui/icons-material';
 import {
   Button,
   DialogContent,
   DialogTitle,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   List,
   ListItem,
-  ListItemButton,
   Modal,
   ModalDialog,
   Option,
@@ -35,14 +36,24 @@ export default function NewCollectionModal({
   const { refetch } = useDataContext();
 
   const [collectionName, setCollectionName] = useState('New Collection');
-  const [collectionFields, setCollectionFields] = useState<CollectionField[]>(
-    [],
-  );
+  const [collectionFields, setCollectionFields] = useState<CollectionField[]>([
+    {
+      id: cuid(),
+      name: 'Field 1',
+      type: 'text',
+    },
+  ]);
 
   function handleClose() {
     setOpen(false);
     setCollectionName('');
-    setCollectionFields([]);
+    setCollectionFields([
+      {
+        id: cuid(),
+        name: 'Field 1',
+        type: 'text',
+      },
+    ]);
   }
 
   const { mutate } = useMutation({
@@ -54,8 +65,6 @@ export default function NewCollectionModal({
         fields: collectionFields,
         values: [],
       };
-
-      console.log(newCollection);
 
       return createCollection(newCollection);
     },
@@ -73,6 +82,12 @@ export default function NewCollectionModal({
     };
 
     setCollectionFields([...collectionFields, newField]);
+  }
+
+  function removeField(index: number) {
+    const updatedFields = collectionFields.filter((_, i) => i !== index);
+
+    setCollectionFields(updatedFields);
   }
 
   function handleUpdateField(
@@ -107,7 +122,14 @@ export default function NewCollectionModal({
           <List size="sm" variant="outlined" sx={{ borderRadius: 6 }}>
             {collectionFields.map((field, index) => (
               <ListItem key={field.id}>
+                <IconButton
+                  onClick={() => removeField(index)}
+                  disabled={collectionFields.length <= 1}
+                >
+                  <Cancel />
+                </IconButton>
                 <Input
+                  sx={{ width: 160 }}
                   size="sm"
                   value={collectionFields[index].name}
                   onChange={(event) =>
@@ -115,6 +137,9 @@ export default function NewCollectionModal({
                   }
                 />
                 <Select
+                  sx={{
+                    width: 100,
+                  }}
                   defaultValue="dog"
                   size="sm"
                   value={collectionFields[index].type}
@@ -128,13 +153,13 @@ export default function NewCollectionModal({
                 </Select>
               </ListItem>
             ))}
-            <ListItem>
-              <ListItemButton onClick={addField}>Add Field</ListItemButton>
-            </ListItem>
           </List>
+          <Button variant="outlined" onClick={addField}>
+            Add Field
+          </Button>
           <Button
             disabled={collectionName === '' || collectionFields.length < 1}
-            onClick={mutate}
+            onClick={() => mutate()}
           >
             Create
           </Button>

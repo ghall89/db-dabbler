@@ -11,7 +11,9 @@ interface Collection {
   createdDt: Date;
   name: string;
   fields: CollectionField[];
-  values: Record<string, string | number | boolean>[];
+  values: {
+    [key: string]: string | number | Date | boolean;
+  }[];
 }
 
 const db = new Dexie('Collections') as Dexie & {

@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   DialogTitle,
   FormControl,
@@ -8,33 +9,44 @@ import {
   ModalDialog,
   Stack,
 } from '@mui/joy';
+import { useMutation } from '@tanstack/react-query';
+import { ChangeEvent, useState } from 'react';
 
 import { useDataContext } from '@/contexts/DataContext';
 
+import { updateCollection } from '@/utils/crud';
 import { type CollectionField } from '@/utils/db';
 
 interface FieldInputProps {
   field: CollectionField;
+  value: any;
+  handleChange: (field: string, value: any) => void;
 }
 
-function FieldInput({ field }: FieldInputProps) {
+function FieldInput({ field, value, handleChange }: FieldInputProps) {
+  function onChangeHandler(event: ChangeEvent<HTMLInputElement>) {
+    handleChange(field.id, event.target.value);
+  }
+
   switch (field.type) {
     case 'text':
       return (
         <FormControl>
           <FormLabel>{field.name}</FormLabel>
-          <Input />
+          <Input value={value} onChange={onChangeHandler} />
         </FormControl>
       );
     case 'number':
       return (
         <FormControl>
           <FormLabel>{field.name}</FormLabel>
-          <Input type="number" />
+          <Input value={value} onChange={onChangeHandler} type="number" />
         </FormControl>
       );
     case 'boolean':
-      return <Checkbox label={field.name} />;
+      return (
+        <Checkbox value={value} onChange={onChangeHandler} label={field.name} />
+      );
   }
 }
 
@@ -44,20 +56,56 @@ interface CreateRowModalProps {
 }
 
 export default function CreateRowModal({ open, setOpen }: CreateRowModalProps) {
-  const { selectedCollection } = useDataContext();
+  const { selectedCollection, refetch } = useDataContext();
+
+  const [fieldValues, setFieldValues] = useState<{ [key: string]: any }>({});
+
+  function handleChange(field: string, value: any) {
+    setFieldValues((prevFieldValues) => ({
+      ...prevFieldValues,
+      [field]: value,
+    }));
+  }
+
+  function handleClose() {
+    setOpen(false);
+    setFieldValues({});
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: () => {
+      if (selectedCollection) {
+        const newRows = [...selectedCollection.values, fieldValues];
+
+        return updateCollection(selectedCollection.id, { values: newRows });
+      }
+
+      return {};
+    },
+    onSuccess: () => {
+      handleClose();
+      refetch();
+    },
+  });
 
   return (
     <Modal
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={handleClose}
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
     >
       <ModalDialog>
         <DialogTitle>New Row</DialogTitle>
         <Stack spacing={2}>
           {selectedCollection?.fields.map((field) => (
-            <FieldInput key={field.id} field={field} />
+            <FieldInput
+              key={field.id}
+              field={field}
+              value={fieldValues[field.name]}
+              handleChange={handleChange}
+            />
           ))}
+          <Button onClick={() => mutate()}>Save</Button>
         </Stack>
       </ModalDialog>
     </Modal>

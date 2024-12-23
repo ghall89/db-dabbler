@@ -1,18 +1,5 @@
-import { Add, MoreVert } from '@mui/icons-material';
-import {
-  Box,
-  Divider,
-  Dropdown,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemDecorator,
-  Menu,
-  MenuButton,
-  MenuItem,
-  Sheet,
-} from '@mui/joy';
+import { Add } from '@mui/icons-material';
+import { Box, Divider, IconButton, List, Sheet } from '@mui/joy';
 import { useMemo, useState } from 'react';
 
 import { useDataContext } from '@/contexts/DataContext';
@@ -21,8 +8,7 @@ import NewCollectionModal from './NewCollectionModal';
 import SidebarListItem from './SidebarListItem';
 
 export default function Sidebar() {
-  const { data, selectedCollectionId, setSelectedCollectionId } =
-    useDataContext();
+  const { data } = useDataContext();
 
   const [modalOpen, setModalOpen] = useState(false);
 
