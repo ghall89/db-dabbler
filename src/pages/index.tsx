@@ -3,7 +3,7 @@ import { Box, Button, Grid, Stack } from '@mui/joy';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import NewCollectionModal from '@/components/NewCollectionModal';
+import NewCollectionModal from '@/components/Modals/NewCollectionModal';
 import { getCollections } from '@/lib/crud';
 
 export default function Home() {

@@ -19,6 +19,7 @@ export interface ContextProps {
   refetch: () => void;
   isFetching: boolean;
   selectedRows: string[];
+  setSelectedRows: (val: string[]) => void;
   handleSelectRow: (id: string) => void;
   selectedCollection: Collection | undefined;
 }
@@ -55,11 +56,12 @@ export default function DataContextProvider({
     return {
       refetch,
       isFetching,
+      setSelectedRows,
       selectedRows,
       handleSelectRow,
       selectedCollection: data,
     };
-  }, [isFetching, refetch, data, selectedRows]);
+  }, [isFetching, refetch, data, selectedRows, setSelectedRows]);
 
   return (
     <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>
