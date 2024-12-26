@@ -1,19 +1,23 @@
 import Dexie, { EntityTable } from 'dexie';
 
-interface CollectionField {
+export interface CollectionField {
   id: string;
   name: string;
   type: 'text' | 'number' | 'date' | 'boolean';
 }
 
-interface Collection {
+export interface CollectionValue {
+  id: string;
+  [key: string]: string | number | Date | boolean;
+}
+
+export interface Collection {
   id: string;
   createdDt: Date;
   name: string;
+  slug: string;
   fields: CollectionField[];
-  values: {
-    [key: string]: string | number | Date | boolean;
-  }[];
+  values: CollectionValue[];
 }
 
 const db = new Dexie('Collections') as Dexie & {
@@ -21,8 +25,7 @@ const db = new Dexie('Collections') as Dexie & {
 };
 
 db.version(1).stores({
-  collections: '++id, createdDt, name, fields, values',
+  collections: '&id, createdDt, &name, &slug, fields, values',
 });
 
-export type { CollectionField, Collection };
 export { db };

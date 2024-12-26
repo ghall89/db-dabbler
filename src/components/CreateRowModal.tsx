@@ -10,12 +10,12 @@ import {
   Stack,
 } from '@mui/joy';
 import { useMutation } from '@tanstack/react-query';
+import cuid from 'cuid';
 import { ChangeEvent, useState } from 'react';
 
-import { useDataContext } from '@/contexts/DataContext';
-
-import { updateCollection } from '@/utils/crud';
-import { type CollectionField } from '@/utils/db';
+import { useDataContext } from '@/contexts/DataProvider';
+import { updateCollection } from '@/lib/crud';
+import { type CollectionField, type CollectionValue } from '@/lib/db';
 
 interface FieldInputProps {
   field: CollectionField;
@@ -75,7 +75,10 @@ export default function CreateRowModal({ open, setOpen }: CreateRowModalProps) {
   const { mutate } = useMutation({
     mutationFn: () => {
       if (selectedCollection) {
-        const newRows = [...selectedCollection.values, fieldValues];
+        const newRows: CollectionValue[] = [
+          ...selectedCollection.values,
+          { id: cuid(), ...fieldValues },
+        ];
 
         return updateCollection(selectedCollection.id, { values: newRows });
       }

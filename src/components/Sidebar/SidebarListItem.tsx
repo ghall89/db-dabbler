@@ -10,9 +10,8 @@ import {
 } from '@mui/joy';
 import { useMutation } from '@tanstack/react-query';
 
-import { useDataContext } from '@/contexts/DataContext';
-
-import { deleteCollection } from '@/utils/crud';
+import { useDataContext } from '@/contexts/DataProvider';
+import { deleteCollection } from '@/lib/crud';
 
 interface SidebarListItemProps {
   label: string;

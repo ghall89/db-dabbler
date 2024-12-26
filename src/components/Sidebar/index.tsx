@@ -2,27 +2,27 @@ import { Add } from '@mui/icons-material';
 import { Box, Divider, IconButton, List, Sheet } from '@mui/joy';
 import { useMemo, useState } from 'react';
 
-import { useDataContext } from '@/contexts/DataContext';
+import { useDataContext } from '@/contexts/DataProvider';
 
 import NewCollectionModal from './NewCollectionModal';
 import SidebarListItem from './SidebarListItem';
 
 export default function Sidebar() {
-  const { data } = useDataContext();
+  const { collections } = useDataContext();
 
   const [modalOpen, setModalOpen] = useState(false);
 
   const sidebarItems = useMemo(() => {
     const sidebarItemsArr: { [key: string]: string } = {};
 
-    if (data) {
-      data.forEach((collection) => {
+    if (collections) {
+      collections.forEach((collection) => {
         sidebarItemsArr[collection.name] = collection.id;
       });
     }
 
     return sidebarItemsArr;
-  }, [data]);
+  }, [collections]);
 
   return (
     <>

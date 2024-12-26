@@ -2,19 +2,9 @@
   "singleQuote": true,
   "quoteProps": "consistent",
   "tabWidth": 2,
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports"
-  ],
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "binaryNextLine": true,
-  "importOrder": [
-    "^@/styles/(.*)$",
-    "^@/layout/(.*)$",
-    "^@/contexts/(.*)$",
-    "^@/components/(.*)$",
-    "^@/utils/(.*)$",
-    "^@/data/(.*)$",
-    "^[./]"
-  ],
+  "importOrder": ["^@/(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

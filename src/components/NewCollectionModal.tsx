@@ -19,22 +19,21 @@ import { useMutation } from '@tanstack/react-query';
 import cuid from 'cuid';
 import { useState } from 'react';
 
-import { useDataContext } from '@/contexts/DataContext';
-
-import { createCollection } from '@/utils/crud';
-import { Collection, CollectionField } from '@/utils/db';
+import { createCollection } from '@/lib/crud';
+import { Collection, CollectionField } from '@/lib/db';
+import { generateSlug } from '@/lib/utils';
 
 interface NewCollectionModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  refetch: () => void;
 }
 
 export default function NewCollectionModal({
   open,
   setOpen,
+  refetch,
 }: NewCollectionModalProps) {
-  const { refetch } = useDataContext();
-
   const [collectionName, setCollectionName] = useState('New Collection');
   const [collectionFields, setCollectionFields] = useState<CollectionField[]>([
     {
@@ -61,6 +60,7 @@ export default function NewCollectionModal({
       const newCollection: Collection = {
         id: cuid(),
         name: collectionName,
+        slug: generateSlug(collectionName),
         createdDt: new Date(),
         fields: collectionFields,
         values: [],
@@ -119,7 +119,11 @@ export default function NewCollectionModal({
               required
             />
           </FormControl>
-          <List size="sm" variant="outlined" sx={{ borderRadius: 6 }}>
+          <List
+            size="sm"
+            variant="outlined"
+            sx={{ borderRadius: 6, maxHeight: '30vh', overflow: 'scroll' }}
+          >
             {collectionFields.map((field, index) => (
               <ListItem key={field.id}>
                 <IconButton
