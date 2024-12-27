@@ -1,4 +1,5 @@
 import Dexie, { EntityTable } from 'dexie';
+import { dexieCloud } from 'dexie-cloud-addon';
 
 export interface CollectionField {
   id: string;
@@ -20,12 +21,17 @@ export interface Collection {
   values: CollectionValue[];
 }
 
-const db = new Dexie('Collections') as Dexie & {
+const db = new Dexie('Collections', { addons: [dexieCloud] }) as Dexie & {
   collections: EntityTable<Collection, 'id'>;
 };
 
 db.version(1).stores({
   collections: '&id, createdDt, &name, &slug, fields, values',
+});
+
+db.cloud.configure({
+  databaseUrl: process.env.DEXIE_CLOUD_URL ?? '',
+  requireAuth: true,
 });
 
 export { db };
