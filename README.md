@@ -1,4 +1,5 @@
-# WhiskerDB
+# WhiskerDB 🐱
+![GitHub License](https://img.shields.io/github/license/ghall89/whiskerdb) ![GitHub top language](https://img.shields.io/github/languages/top/ghall89/WhiskerDB)
 
 ## About
 
