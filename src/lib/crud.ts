@@ -1,6 +1,7 @@
+import { generateSlug } from '@/utils/formatters';
+
 import { db } from './db';
 import { type Collection } from './db';
-import { generateSlug } from './utils';
 
 export interface CollectionListItem {
   id: string;

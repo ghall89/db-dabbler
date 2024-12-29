@@ -1,39 +1,37 @@
-import { Cancel } from '@mui/icons-material';
-import {
-  Button,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  List,
-  ListItem,
-  Modal,
-  ModalDialog,
-  Option,
-  Select,
-  Stack,
-} from '@mui/joy';
 import { useMutation } from '@tanstack/react-query';
 import cuid from 'cuid';
+import { CircleX, Plus } from 'lucide-react';
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { createCollection } from '@/lib/crud';
 import { Collection, CollectionField } from '@/lib/db';
-import { generateSlug } from '@/lib/utils';
+import { generateSlug } from '@/utils/formatters';
 
 interface NewCollectionModalProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
   refetch: () => void;
 }
 
 export default function NewCollectionModal({
-  open,
-  setOpen,
   refetch,
 }: NewCollectionModalProps) {
+  const [modalOpen, setModalOpen] = useState(false);
   const [collectionName, setCollectionName] = useState('New Collection');
   const [collectionFields, setCollectionFields] = useState<CollectionField[]>([
     {
@@ -44,8 +42,7 @@ export default function NewCollectionModal({
   ]);
 
   function handleClose() {
-    setOpen(false);
-    setCollectionName('');
+    setCollectionName('New Collection');
     setCollectionFields([
       {
         id: cuid(),
@@ -69,7 +66,7 @@ export default function NewCollectionModal({
       return createCollection(newCollection);
     },
     onSuccess: () => {
-      handleClose();
+      setModalOpen(false);
       refetch();
     },
   });
@@ -102,73 +99,72 @@ export default function NewCollectionModal({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-    >
-      <ModalDialog>
-        <DialogTitle>Create a New Collection</DialogTitle>
-        <DialogContent>Fill in the information of the project.</DialogContent>
-        <Stack spacing={2}>
-          <FormControl>
-            <FormLabel>Collection Name</FormLabel>
-            <Input
-              value={collectionName}
-              onChange={(event) => setCollectionName(event.target.value)}
-              required
-            />
-          </FormControl>
-          <List
-            size="sm"
-            variant="outlined"
-            sx={{ borderRadius: 6, maxHeight: '30vh', overflow: 'scroll' }}
-          >
-            {collectionFields.map((field, index) => (
-              <ListItem key={field.id}>
-                <IconButton
-                  onClick={() => removeField(index)}
-                  disabled={collectionFields.length <= 1}
-                >
-                  <Cancel />
-                </IconButton>
-                <Input
-                  sx={{ width: 160 }}
-                  size="sm"
-                  value={collectionFields[index].name}
-                  onChange={(event) =>
-                    handleUpdateField(index, 'name', event.target.value)
-                  }
-                />
-                <Select
-                  sx={{
-                    width: 100,
-                  }}
-                  defaultValue="dog"
-                  size="sm"
-                  value={collectionFields[index].type}
-                  onChange={(_, value) =>
-                    handleUpdateField(index, 'type', value)
-                  }
-                >
-                  <Option value="text">Text</Option>
-                  <Option value="number">Number</Option>
-                  <Option value="boolean">Boolean</Option>
-                </Select>
-              </ListItem>
-            ))}
-          </List>
-          <Button variant="outlined" onClick={addField}>
-            Add Field
-          </Button>
-          <Button
-            disabled={collectionName === '' || collectionFields.length < 1}
-            onClick={() => mutate()}
-          >
-            Create
-          </Button>
-        </Stack>
-      </ModalDialog>
-    </Modal>
+    <Dialog onOpenChange={handleClose}>
+      <DialogTrigger>
+        <Button>
+          <Plus />
+          New Collection
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create a New Collection</DialogTitle>
+          <DialogDescription>
+            Fill in the information for your collection.
+          </DialogDescription>
+        </DialogHeader>
+        <div>
+          <Input
+            id="collection-name"
+            onChange={(event) => setCollectionName(event.target.value)}
+            value={collectionName}
+            className="col-span-3"
+          />
+        </div>
+        <div className="overflow-scroll h-[30vh] border-[1px] pl-2 pr-4 rounded-sm">
+          {collectionFields.map((field, index) => (
+            <div className="flex flex-row gap-2 my-2" key={field.id}>
+              <Button
+                onClick={() => removeField(index)}
+                variant="link"
+                disabled={collectionFields.length === 1}
+              >
+                <CircleX />
+              </Button>
+              <Input
+                value={collectionFields[index].name}
+                onChange={(event) =>
+                  handleUpdateField(index, 'name', event.target.value)
+                }
+              />
+              <Select
+                onChange={(value) => {
+                  handleUpdateField(index, 'type', value);
+                }}
+                defaultValue={field.type}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a verified email to display" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="text">Text</SelectItem>
+                  <SelectItem value="number">Number</SelectItem>
+                  <SelectItem value="boolean">Boolean</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ))}
+        </div>
+        <Button variant="outline" onClick={addField}>
+          Add Field
+        </Button>
+        <Button
+          disabled={collectionName === '' || collectionFields.length < 1}
+          onClick={() => mutate()}
+        >
+          Create
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 }

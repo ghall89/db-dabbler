@@ -1,5 +1,6 @@
-export function generateSlug(input: string): string {
-  const slug = input.toLowerCase().split(' ').join('-');
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
-  return slug;
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
